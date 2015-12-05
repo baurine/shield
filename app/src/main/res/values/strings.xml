@@ -3,4 +3,10 @@
     <string name="action_settings">Settings</string>
 
     <string name="shield_enable">开启插件</string>
+    <string name="shield_desc">屏蔽微信朋友圈，点击 \"发现\" 时自动跳动 \"我\" 界面。</string>
+
+    <string name="shield_content">受微信红包插件启发，实现了以前一直想做的一个好玩的功能 -- 屏蔽微信朋友圈。\n开启此插件后，当用户点击微信的 \"发现\" 栏后，会自动跳到 \"我\" 栏。\n目前此插件仅在 MX4 Pro 上测试过。</string>
+    <string name="shield_todo">TODO:\n1. 增加更多屏蔽选项，可以更小粒度选择屏蔽哪些内容\n2.
+        增加通知栏，以使插件尽可能不被系统在后台干掉\n</string>
+
 </resources>
