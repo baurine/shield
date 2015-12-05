@@ -1,50 +1,25 @@
 package com.sparkle.shield;
 
 import android.accessibilityservice.AccessibilityService;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.util.List;
+
 public class ShieldService extends AccessibilityService {
 
     private static final String TAG = ShieldService.class.getSimpleName();
-    // private String[] PACKAGES = {"com.tencent.mm"};
+
+    private static final String NAME_RELATIVE_LAYOUT = "android.widget.RelativeLayout";
+    private static final String NAME_TEXT_VIEW = "android.widget.TextView";
+
+    private static final String STR_DISCOVER_CN = "[发现]";
+    private static final String STR_ME_CN = "我";
 
     @Override
     protected void onServiceConnected() {
         Log.i(TAG, "accessibility enabled!");
-
-        /*
-        AccessibilityServiceInfo asi = new AccessibilityServiceInfo();
-        asi.packageNames = PACKAGES;
-        asi.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
-        asi.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
-        asi.notificationTimeout = 100;
-        setServiceInfo(asi);
-        */
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        int eventType = event.getEventType();
-        Log.i(TAG, eventType + ":" + event.toString());
-        for (CharSequence cs : event.getText()) {
-            if (cs != null) {
-                Log.i(TAG, "event text: " + cs.toString());
-            }
-        }
-        Log.i(TAG, "event class: " + event.getClassName());
-
-        AccessibilityNodeInfo nodeInfo = event.getSource();
-        if (nodeInfo != null) {
-            Log.i(TAG, nodeInfo.toString());
-        }
-
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        traverseNode(rootNode, 0);
     }
 
     @Override
@@ -52,29 +27,41 @@ public class ShieldService extends AccessibilityService {
         Log.i(TAG, "onInterrupt");
     }
 
-    private void traverseNode(AccessibilityNodeInfo node, int layer) {
-        showNodeInfo(node, layer);
-        if (node != null) {
-            for (int i = 0; i < node.getChildCount(); i++) {
-                traverseNode(node.getChild(i), layer + 1);
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        // AccessibilityEvent.getText() 返回一个不会为 null 的数组
+        // 所以这里不用判 null, 如果 getText() 为空, 则 content 为 "[]"
+        String content = event.getText().toString();
+        Log.i(TAG, "event content: " + content);
+
+        // 目前只支持中文
+        if (content.equals(STR_DISCOVER_CN)) {
+            if (event.getClassName().equals(NAME_RELATIVE_LAYOUT)) {
+                Log.i(TAG, "click discover");
+
+                jumpToAboutMe(event.getSource());
             }
+        } else {
+            // TODO: 处理点击 "朋友圈" 事件
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void showNodeInfo(AccessibilityNodeInfo node, int layer) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < layer; i++) {
-            sb.append("  ");
-        }
+    private void jumpToAboutMe(AccessibilityNodeInfo source) {
+        if (source != null) {
 
-        if (node == null) {
-            Log.i(TAG, sb + "node is null");
-        } else {
-            Log.i(TAG, sb + "childWidget: " + node.getClassName());
-            Log.i(TAG, sb + "showDialog: " + node.canOpenPopup());
-            Log.i(TAG, sb + "text: " + node.getText());
-            Log.i(TAG, sb + "windowID: " + node.getWindowId());
+            List<AccessibilityNodeInfo> nodes = source.getParent()
+                    .findAccessibilityNodeInfosByText(STR_ME_CN);
+
+            for (AccessibilityNodeInfo node : nodes) {
+                if (node.getText() != null &&
+                        node.getText().toString().equals(STR_ME_CN) &&
+                        node.getClassName().equals(NAME_TEXT_VIEW)) {
+                    node.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
+                node.recycle();
+            }
+
+            source.recycle();
         }
     }
 
