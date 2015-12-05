@@ -17,6 +17,8 @@ public class ShieldService extends AccessibilityService {
     private static final String STR_DISCOVER_CN = "[发现]";
     private static final String STR_ME_CN = "我";
 
+    public static final String NAME = TAG;
+
     @Override
     protected void onServiceConnected() {
         Log.i(TAG, "accessibility enabled!");
