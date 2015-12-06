@@ -12,10 +12,12 @@
 
 #### 演示效果图：
 
-![screenshot](apk/screenshot.jpg)
+![screenshot](apk/0_main_activity.png)
+
+![screenshot](apk/1_system_setting.png)
 
 [GIF 体积太大，看这里](http://weibo.com/1666522694/D74CL18lg?from=page_1005051666522694_profile&wvr=6&mod=weibotime&type=comment#_rnd1449335990049)
 
 #### APK
 
-[下载](apk/shield-debug.apk)
+[下载](apk/app-debug.apk)
