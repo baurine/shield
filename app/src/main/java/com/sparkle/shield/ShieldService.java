@@ -16,7 +16,7 @@ public class ShieldService extends AccessibilityService {
     private static final String NAME_RELATIVE_LAYOUT = "android.widget.RelativeLayout";
     private static final String NAME_TEXT_VIEW = "android.widget.TextView";
 
-    private static final String STR_DISCOVER_CN = "[发现";
+    private static final String STR_DISCOVER_CN = "发现]";
     private static final String STR_ME_CN = "我";
 
     public static final String NAME = TAG;
@@ -56,7 +56,7 @@ public class ShieldService extends AccessibilityService {
         Log.i(TAG, "event content: " + content);
 
         // 目前只支持中文
-        if (content.startsWith(STR_DISCOVER_CN)) {
+        if (content.endsWith(STR_DISCOVER_CN)) {
             if (event.getClassName().equals(NAME_RELATIVE_LAYOUT)) {
                 Log.i(TAG, "click discover");
                 if (shieldWechatDiscover) {
