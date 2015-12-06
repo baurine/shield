@@ -1,6 +1,8 @@
 package com.sparkle.shield;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -14,10 +16,27 @@ public class ShieldService extends AccessibilityService {
     private static final String NAME_RELATIVE_LAYOUT = "android.widget.RelativeLayout";
     private static final String NAME_TEXT_VIEW = "android.widget.TextView";
 
-    private static final String STR_DISCOVER_CN = "[发现]";
+    private static final String STR_DISCOVER_CN = "[发现";
     private static final String STR_ME_CN = "我";
 
     public static final String NAME = TAG;
+
+    private static final String KEY_SHIELD_WECHAT_DISCOVER = "KEY_SHIELD_WECHAT_DISCOVER";
+    private boolean shieldWechatDiscover = true;
+
+    public static void start(Context from, boolean shieldWechatDiscover) {
+        Intent intent = new Intent(from, ShieldService.class);
+        intent.putExtra(KEY_SHIELD_WECHAT_DISCOVER, shieldWechatDiscover);
+        from.startService(intent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            shieldWechatDiscover = intent.getBooleanExtra(KEY_SHIELD_WECHAT_DISCOVER, true);
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Override
     protected void onServiceConnected() {
@@ -37,11 +56,12 @@ public class ShieldService extends AccessibilityService {
         Log.i(TAG, "event content: " + content);
 
         // 目前只支持中文
-        if (content.equals(STR_DISCOVER_CN)) {
+        if (content.startsWith(STR_DISCOVER_CN)) {
             if (event.getClassName().equals(NAME_RELATIVE_LAYOUT)) {
                 Log.i(TAG, "click discover");
-
-                jumpToAboutMe(event.getSource());
+                if (shieldWechatDiscover) {
+                    jumpToAboutMe(event.getSource());
+                }
             }
         } else {
             // TODO: 处理点击 "朋友圈" 事件

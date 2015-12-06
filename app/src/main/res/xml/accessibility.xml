@@ -6,4 +6,13 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/shield_desc"
     android:notificationTimeout="100"
-    android:packageNames="com.tencent.mm"/>
+    android:packageNames="com.tencent.mm"
+    android:settingsActivity="com.sparkle.shield.MainActivity"/>
+
+<!--
+    android:description="@string/shield_desc"
+    此文本内容会显示在系统设置界面
+
+    android:settingsActivity="com.sparkle.shield.MainActivity"
+    在系统设置界面设置完成后，可以直接回到此 Activity，省去多次 back 操作
+-->

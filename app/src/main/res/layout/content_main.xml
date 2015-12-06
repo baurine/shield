@@ -26,6 +26,20 @@
         android:layout_marginTop="8dp"
         android:background="#33000000"/>
 
+    <Switch
+        android:id="@+id/switch_wechat_discover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:checked="true"
+        android:text="@string/shield_wechat_discover"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#33000000"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

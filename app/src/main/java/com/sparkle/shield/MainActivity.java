@@ -9,19 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import java.util.List;
 
-
 public class MainActivity
         extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private final Intent accessibilitySettingsIntent =
             new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
 
     private Switch shieldSwitch;
+    private Switch switchWechatDiscover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +42,17 @@ public class MainActivity
     }
 
     private void updateSwitchStatus() {
-        shieldSwitch.setChecked(serviceEnabled());
+        boolean serviceEnabled = serviceEnabled();
+        shieldSwitch.setChecked(serviceEnabled);
+        switchWechatDiscover.setEnabled(serviceEnabled);
     }
 
     private void initViews() {
         shieldSwitch = (Switch) findViewById(R.id.shield_switch);
         shieldSwitch.setOnClickListener(this);
+
+        switchWechatDiscover = (Switch) findViewById(R.id.switch_wechat_discover);
+        switchWechatDiscover.setOnCheckedChangeListener(this);
     }
 
     private boolean serviceEnabled() {
@@ -71,5 +77,10 @@ public class MainActivity
     @Override
     public void onClick(View v) {
         startActivity(accessibilitySettingsIntent);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        ShieldService.start(this, isChecked);
     }
 }
